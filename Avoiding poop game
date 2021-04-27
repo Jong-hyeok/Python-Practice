@@ -1,0 +1,94 @@
+# 똥피하기 게임
+import pygame
+from random import *
+
+pygame.init() 
+
+
+screen_width = 480 
+screen_height = 640 
+screen = pygame.display.set_mode((screen_width, screen_height))
+
+
+pygame.display.set_caption("똥피하기 게임")
+
+
+clock = pygame.time.Clock()
+
+# background, character, dung 사진 파일이 있어야 실행 가능
+background = pygame.image.load("C:/Users/ghpjh/Desktop/python game/pygame_basic/background1.png")
+character = pygame.image.load("C:/Users/ghpjh/Desktop/python game/pygame_basic/character.png")
+character_size = character.get_rect().size
+character_width = character_size[0]
+character_height = character_size[1]
+character_x_pos = (screen_width/2) - (character_width/2)
+character_y_pos = screen_height - character_height
+
+to_x = 0
+to_y = 0
+character_speed = 0.6
+
+
+dung = pygame.image.load("C:/Users/ghpjh/Desktop/python game/pygame_basic/dung.png")
+dung_size = dung.get_rect().size
+dung_width = dung_size[0]
+dung_height = dung_size[1]
+dung_x_pos = randint(0,screen_width-dung_width)
+dung_y_pos = 0
+dung_speed = 0.4
+
+
+
+
+running = True
+while running:
+    dt = clock.tick(30) 
+
+    for event in pygame.event.get():  
+        if event.type == pygame.QUIT:  
+            running = False  
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                to_x -= character_speed
+            elif event.key == pygame.K_RIGHT:
+                to_x += character_speed
+
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                to_x = 0
+        
+        if dung_y_pos > screen_height :
+            dung_y_pos = 0
+            dung_x_pos = randint(0, screen_width - dung_width)
+    
+    character_x_pos += to_x * dt 
+    
+    if character_x_pos < 0 :
+        character_x_pos = 0
+    elif character_x_pos > screen_width - character_width:
+        character_x_pos = screen_width - character_width
+
+    dung_y_pos += dung_speed *dt
+
+    character_rect = character.get_rect()
+    character_rect.left = character_x_pos
+    character_rect.top = character_y_pos
+
+    dung_rect = dung.get_rect()
+    dung_rect.left = dung_x_pos
+    dung_rect.top = dung_y_pos
+
+    if character_rect.colliderect(dung_rect):
+        print("충돌했어요!")
+        running = False
+
+    screen.blit(background, (0,0))
+    screen.blit(character, (character_x_pos, character_y_pos))
+    screen.blit(dung, (dung_x_pos, dung_y_pos))
+
+
+    pygame.display.update() 
+
+
+pygame.quit()

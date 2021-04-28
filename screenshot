@@ -1,0 +1,14 @@
+import time
+import keyboard
+from PIL import ImageGrab
+
+def screenshot():
+    cur_time = time.strftime("_%Y%m%d_%H%M%S")
+    img = ImageGrab.grab()
+    img.save("image{}.png".format(cur_time)) # image_20210428_100930
+
+# click "q" -> screenshot
+keyboard.add_hotkey("q", screenshot)
+
+# click "esc" -> quit
+keyboard.wait("esc") 
